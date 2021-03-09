@@ -1,1 +1,1 @@
-This project aims to investigate unsupervised learning approaches in the context of Fake News Detection
+This project aims to investigate reinforcement learning approaches in the context of Fake News Detection
