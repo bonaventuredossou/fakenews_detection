@@ -6,15 +6,21 @@
 import pandas as pd
 import string
 import re
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+# from geograpy import places
 
-true_file_name = "./dataset/True.csv"
-fake_file_name = "./dataset/Fake.csv"
+true_file_name = "../dataset/True.csv"
+fake_file_name = "../dataset/Fake.csv"
 
 true_dataset = pd.read_csv(true_file_name)
 true_dataset.dropna(axis=0, how='any', inplace=True)
 
 fake_dataset = pd.read_csv(fake_file_name)
 fake_dataset.dropna(axis=0, how='any', inplace=True)
+
+punctuations = string.punctuation
+punctuations = punctuations.replace("-", "")
 
 
 def explode_characters(article):
@@ -50,10 +56,10 @@ def explode_characters(article):
     article = re.sub(r"won't", "will not", article)
     article = re.sub(r"can't", "cannot", article)
     article = re.sub(r"n't", " not", article)
-    article = re.sub(r"n'", "ng", article)
+    article = re.sub(r"n'", "ing", article)
     article = re.sub(r"'bout", "about", article)
     article = re.sub(r"'til", "until", article)
-    article = re.sub(r"[-()\"#/@;:<>{}`+=~|.!?,]", "", article)
+    article = re.sub(r"[()\"#/@;:<>{}`+=~|.!?,]", "", article)
 
     return article
 
@@ -72,20 +78,18 @@ def preprocess_sentence(article_):
     """
     article_ = article_.lower().strip()
     article_ = explode_characters(article_)
+    
     article_ = re.sub(r"([?.!,¿])", r" \1 ", article_)
     article_ = re.sub(r"[^a-zA-Z.!?]+", r" ", article_)
     article_ = re.sub(r"\s+", r" ", article_).strip()
     article_ = re.sub(r'[" "]+', " ", article_)
 
-    re_punc = re.compile('[%s]' % re.escape(string.punctuation))
-    article_ = re_punc.sub('', article_)
-
-    article_ = article_.replace("”", "")
-    article_ = article_.replace("“", "")
-    article_ = article_.replace("’", "'")
-    article_ = article_.replace("«", "")
-    article_ = article_.replace("»", "")
     article_ = ' '.join([word for word in article_.split() if word.isalpha()])
+
+    # remove stop words
+    stop_words = set(stopwords.words('english'))
+    word_tokens = word_tokenize(article_)
+    article_ = ' '.join(w.strip() for w in word_tokens if w not in stop_words)
 
     return article_
 
@@ -108,5 +112,5 @@ print("Fake articles dataset after cleaning")
 print(fake_dataset['text'].head(5))
 print("\n")
 # saving the entire preprocessed dataset
-true_dataset.to_csv("./dataset/preprocessed_true.csv", index=False)
-fake_dataset.to_csv("./dataset/preprocessed_fake.csv", index=False)
+true_dataset.to_csv("../dataset/preprocessed_true.csv", index=False)
+fake_dataset.to_csv("../dataset/preprocessed_fake.csv", index=False)

@@ -1,0 +1,13 @@
+git init
+git checkout -b main
+git remote add origin https://github.com/bonaventuredossou/fakenews_detection.git
+git remote -v
+git add .
+git commit -m "First commit"
+git push origin main
+
+# if it fails, run the following
+git pull --rebase origin main
+git push origin main
+
+# link youtube: https://www.youtube.com/watch?v=2vASHVT0qKc
