@@ -1,5 +1,4 @@
 import random
-
 from gensim.models import Word2Vec
 from matplotlib import pyplot
 from sklearn.decomposition import PCA

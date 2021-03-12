@@ -42,12 +42,17 @@ for i in true_corpus:
 for i in fake_corpus:
     fake_vocab.addSentence(i)
 
+
 top_k = [200, 500, 1000, 1500, 2000]
+
+true_vocab_count = sorted(true_vocab.word2count.items(), key=lambda x: x[1], reverse=True)
+fake_vocab_count = sorted(fake_vocab.word2count.items(), key=lambda x: x[1], reverse=True)
+
 
 for k in top_k:
 
-    n_frequent_true = list(true_vocab.word2count.keys())[:k]
-    n_frequent_fake = list(fake_vocab.word2count.keys())[:k]
+    n_frequent_true = list(_[0] for _ in true_vocab_count)[:k]
+    n_frequent_fake = list(_[0] for _ in fake_vocab_count)[:k]
 
     words_true = [[_.strip()] for _ in n_frequent_true]
     words_fake = [[_.strip()] for _ in n_frequent_fake]
@@ -78,8 +83,6 @@ for k in top_k:
     pyplot.title("Visualization of Real Article Word Embedding - Word Vectors Using PCA")
     pyplot.savefig("../plots/word2vec_true_top_{}.png".format(k))
     # pyplot.show()
-
-
 
     Y = new_model_fake[new_model_fake.wv.vocab]
     pca = PCA(n_components=2)
